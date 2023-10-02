@@ -6,25 +6,25 @@ import numpy as np
 import tensorflow as tf
 from tensorflow import keras
 from keras import layers
-
 from utils import labels, label_keys
 from train_cnn_model import load_model
 
-## Object to classify a piece
 class PieceClassifier:
-    def __init__(self,weight_file="model_weights"):
-        """Initialized PieceClassifier object using CNN model weights
+    """Object to classify a chees piece using a CNN."""
+    def __init__(self,weight_file: str ="model_weights"):
+        """Initialized PieceClassifier object using CNN model weights.
 
         Args:
-            weight_file (str, optional): File with model weights. Defaults to "model_weights".
+            weight_file (str, optional): File with model weights. Defaults to
+                    "model_weights".
         """ 
         self.model = load_model(weight_file=weight_file)
     
-    def predict(self, square):
-        """Predicts the piece type based piece image tensor
+    def predict(self, square: tf.Tensor):
+        """Predicts the piece type based piece image tensor.
 
         Args:
-            square (tf.tensor): shape =(height,width,1) 
+            square (tf.tensor): shape (height,width,1) 
 
         Returns:
             str: alphabetic label of shape
@@ -40,12 +40,12 @@ class PieceClassifier:
         return tf.nn.softmax(self.model.predict(square,verbose=0))
 
 if __name__ == "__main__":
-    ## Read square
+    # Read square
     square_path = sys.argv[1]
     square = tf.io.read_file(square_path)
     square = tf.io.decode_jpeg(square, channels=1)
     
-    ## Print predictions
+    # Print predictions
     piece_clf = PieceClassifier()
     preds = piece_clf.predict_proba(square)
     print("The following are the predictions probabilities:")

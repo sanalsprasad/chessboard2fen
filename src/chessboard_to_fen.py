@@ -1,6 +1,4 @@
-"""
-File to identify the FEN string using the image tensor of a chessboard
-"""
+"""File to identify the FEN string using the image tensor of a chessboard."""
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'  # Suppress Tensorflow output
 
@@ -11,27 +9,25 @@ from piece_classifier import PieceClassifier
 from utils import labels_to_fen, labels
 
 
-## This file reads a chess board and predicts its FEN
 class ChessboardToFEN:
-    """ Generate FEN string of a chessboard image tensor
-    """
+    """Generate FEN string of a chessboard image tensor."""
     def __init__(self, piece_clf = PieceClassifier()):
-        """Initialize FENClassifier object
+        """Initialize ChessboardToFEN object
 
         Args:
             piece_clf (PieceClassifier, optional): object for classifying chess pieces. Defaults to PieceClassifier().
         """
         self.piece_clf = piece_clf
 
-    def predict_confidence(self, board):
+    def predict_confidence(self, board: tf.Tensor) -> tuple[str, np.ndarray]:
         """Predict the FEN string of a board and return with confidence
 
         Args:
-            board (tensorflow.tensor): pixel data of a chessboard of shape (400,400,1)
+            board (tensorflow.tensor): pixel data of a (grayscale) chessboard of shape (400,400,1)
 
         Returns:
             fen_string (str): Predicted FEN string of the board
-            conf (numpy.ndarray): Confidence of prediction of each shape, shape = (8,8)
+            conf (np.ndarray): Confidence of prediction of each shape, shape = (8,8)
         """
         board = tf.image.resize(board, size=[400,400])
         board = board/255.0
@@ -50,12 +46,12 @@ class ChessboardToFEN:
     
 
 if __name__ == "__main__":
-    ## Read board
+    # Read board
     board_path = sys.argv[1]
     board = tf.io.read_file(board_path)
     board = tf.io.decode_jpeg(board, channels=1)
     
-    ## Print predictions
+    # Print predictions
     board_to_fen = ChessboardToFEN()
     fen, conf = board_to_fen.predict_confidence(board)
     print("The predicted FEN string of the board is : ", fen)
