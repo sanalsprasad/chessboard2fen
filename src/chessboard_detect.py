@@ -182,6 +182,7 @@ if __name__ == "__main__":
     image = cv2.imread(image_path)
     chessboard_detect = ChessboardDetect(image)
     chessboard = chessboard_detect.get_chessboard()
+    cv2.imwrite('detected_chessboard.jpg', chessboard)
     cv2.imshow('Detected Chessboard', chessboard)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
