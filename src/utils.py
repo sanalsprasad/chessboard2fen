@@ -1,4 +1,4 @@
-## Labels and the corresponding chess pieces
+# Labels and the corresponding chess pieces
 label_keys = {
     "": "Empty square",
     "P": "White Pawn",
@@ -15,10 +15,12 @@ label_keys = {
     "k": "Black King",
 }
 
-## Character labels
+
+# Character labels
 labels = list(label_keys.keys())
 
-## Numerical labels
+
+# Numerical labels
 num_labels = {labels[idx]: idx for idx in range(len(labels))}
 
 def fen_to_labels(fen: str) -> list[list[str]]:
@@ -32,7 +34,7 @@ def fen_to_labels(fen: str) -> list[list[str]]:
     fen_rows = fen.split("-")
     label_matrix = []
     for row in fen_rows:
-        ## Convert each row to an array of labels of size 8
+        # Convert each row to an array of labels of size 8
         label_row = []
         for c in row: 
             if c in "12345678":
@@ -42,6 +44,7 @@ def fen_to_labels(fen: str) -> list[list[str]]:
             row = row[1:]
         label_matrix.append(label_row)
     return label_matrix
+
 
 def labels_to_fen(label_matrix: list[list[int]]) -> str:
     """Returns FEN string from label matrix
@@ -64,3 +67,11 @@ def labels_to_fen(label_matrix: list[list[int]]) -> str:
                 fen = fen + c
         fen = fen + "/"
     return fen[:-1] # Ignore the last "/"
+
+
+def flip_fen(fen):
+    """Function to flip the FEN string to go from a1 square on bottom-left 
+    to h8 square on bottom-left and vice versa."""
+    rows = fen.split("/")
+    rows = [row[::-1] for row in rows[::-1]]
+    return "/".join(rows)

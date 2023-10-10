@@ -1,12 +1,12 @@
 """Module to detect chessboard from a given image."""
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'  # Suppress Tensorflow output
-
+import argparse  # For command line arguments
 import numpy as np
 import cv2
 import tensorflow as tf
-import sys
 from chessboard_to_fen import ChessboardToFEN
+from utils import flip_fen
 
 
 class LineDetection:
@@ -160,39 +160,50 @@ class ChessboardDetect:
         resize_factor = np.array([[hor_resize_factor]*2, [ver_resize_factor]*2])
         return (optimal_edges * resize_factor).astype(int)
     
-    def get_unoriented_chessboard(self):
-        """Method to return the unoriented chessboard detected from the image."""
+    def get_chessboard(self):
+        """Method to return the chessboard detected from the image."""
         optimal_edges = self.get_optimal_edges()
         hline1, hline2 = optimal_edges[0]
         vline1, vline2 = optimal_edges[1]
         return self.image[hline1:hline2, vline1:vline2]
 
-    def get_chessboard(self): 
-        """Method to return the chessboard detected from the image such that the
-        a1 square is in the bottom left corner i.e. player is facing white."""
-        unoriented_chessboard = self.get_unoriented_chessboard()
-        gray = cv2.cvtColor(unoriented_chessboard, cv2.COLOR_BGR2GRAY)
-        if self.filter.convolve(gray) > 0:
-            return unoriented_chessboard
-        return cv2.rotate(unoriented_chessboard, cv2.ROTATE_180)
-    
-    
+
+def parse_arguments():
+    """Function to parse command line arguments."""
+    parser = argparse.ArgumentParser(
+        description='Program to detect chessboard from an image and return the FEN string.')
+    parser.add_argument('image', help='Filename of the image.')
+    parser.add_argument('--output', '-o', help='Filename to save the detected chessboard.', 
+                        default='detected_chessboard.jpg')
+    parser.add_argument('--flip', '-f', action='store_true',
+                        help='Flip the image. Use this if the chessboard is upside down.')
+    return parser.parse_args()
+
+
 if __name__ == "__main__":
-    image_path = sys.argv[1]
-    image = cv2.imread(image_path)
+    # Parse arguments
+    args = parse_arguments()
+    image_file, output_file, flip = args.image, args.output, args.flip
+    
+    # Detect chessboard
+    image = cv2.imread(image_file)
     chessboard_detect = ChessboardDetect(image)
     chessboard = chessboard_detect.get_chessboard()
-    cv2.imwrite('detected_chessboard.jpg', chessboard)
+    cv2.imwrite(output_file, chessboard)
     cv2.imshow('Detected Chessboard', chessboard)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
+    
+    # Predict FEN string
     chessboard_to_fen = ChessboardToFEN()
     # Convert to gray scale and reshape to (h,w,1) for prediction
     gray = cv2.cvtColor(chessboard, cv2.COLOR_BGR2GRAY)
     reshaped = gray[:,:,np.newaxis]
     fen, _ = chessboard_to_fen.predict_confidence(tf.constant(reshaped))
+    # Flip FEN if needed
+    if flip:
+        fen = flip_fen(fen)
     print(f"The predicted FEN string is {fen}.")
     cv2.imshow(f"Predicted FEN String: {fen}", chessboard)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
-    

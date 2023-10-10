@@ -1,12 +1,12 @@
 """File to identify the FEN string using the image tensor of a chessboard."""
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'  # Suppress Tensorflow output
-
+import argparse  # For command line arguments
 import sys
 import numpy as np
 import tensorflow as tf
 from piece_classifier import PieceClassifier
-from utils import labels_to_fen, labels
+from utils import labels_to_fen, labels, flip_fen
 
 
 class ChessboardToFEN:
@@ -20,7 +20,7 @@ class ChessboardToFEN:
         self.piece_clf = piece_clf
 
     def predict_confidence(self, board: tf.Tensor) -> tuple[str, np.ndarray]:
-        """Predict the FEN string of a board and return with confidence
+        """Predict the FEN string of a board and return with confidence.
 
         Args:
             board (tensorflow.tensor): pixel data of a (grayscale) chessboard of shape (400,400,1)
@@ -45,16 +45,25 @@ class ChessboardToFEN:
         return labels_to_fen(board_matrix), conf
     
 
+def parse_arguments():
+    parser = argparse.ArgumentParser(description="Predict FEN string of a chessboard image.")
+    parser.add_argument("board", help="Filename of the chessboard image.")
+    parser.add_argument("--flip", "-f", action='store_true',
+                        help="Flip the image. Use this if the chessboard is upside down.")
+    return parser.parse_args()
+
+
 if __name__ == "__main__":
-    # Read board
-    board_path = sys.argv[1]
-    board = tf.io.read_file(board_path)
-    board = tf.io.decode_jpeg(board, channels=1)
+    args = parse_arguments()
+    board_file, flip = args.board, args.flip
+    board = tf.io.read_file(board_file)
+    board = tf.io.decode_image(board, channels=1)
     
     # Print predictions
     board_to_fen = ChessboardToFEN()
     fen, conf = board_to_fen.predict_confidence(board)
+    if flip:
+        fen = flip_fen(fen)
     print("The predicted FEN string of the board is : ", fen)
     print("The confidence matrix of prediction is: ")
     print(conf)
-
