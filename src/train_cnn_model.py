@@ -91,7 +91,7 @@ def train_model(x_train: tf.Tensor, y_train: tf.Tensor) -> keras.Model:
     epochs = 5
     model.fit(x_train, y_train, epochs=epochs)
     print("Done training model.")
-    model.save_weights('model_weights')  # Save the weights of the model 
+    model.save('model_weights')  # Save the weights of the model 
     print("Model weights saved to file model_weights.")
     return model
 
@@ -152,8 +152,7 @@ def load_model(weight_file: str = "model_weights") -> keras.Model:
     Returns:
         model (keras.Model): Neural network with weights loaded from weight file.
     """
-    model = create_model()
-    model.load_weights(weight_file)
+    model = tf.keras.models.load_model(weight_file)
     return model 
 
 
