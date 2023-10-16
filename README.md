@@ -41,5 +41,5 @@ The project is structured as follows:
 * The CNN is currently trained only on square and pieces generated using chess.com themes, and might not perform well on other kinds of boards. The model may need to be fine-tuned for other use cases. 
 
 ## Acknowledgements
-The neural network is trained using a subset of [this kaggle dataset](https://www.kaggle.com/datasets/koryakinp/chess-positions) created Pavel Koryakin.
+The neural network is trained using a subset of [this kaggle dataset](https://www.kaggle.com/datasets/koryakinp/chess-positions) created by Pavel Koryakin.
 This project is inspired by [chessvision-ai](https://chessvision.ai/) and their reddit bot [/u/chessvision-ai-bot](https://reddit.com/u/chessvision-ai-bot). 
