@@ -142,7 +142,7 @@ def validate_model(model: keras.Model, test_board_count: int = 100) -> None:
     model.evaluate(x_test,y_test)
     
 
-def load_model(saved_model: str = "saved_model") -> keras.Model:
+def load_model(saved_model: str = "saved_model.keras") -> keras.Model:
     """Loads the weights of the neural network from the weights file.
 
     Args:
@@ -152,7 +152,7 @@ def load_model(saved_model: str = "saved_model") -> keras.Model:
     Returns:
         model (keras.Model): Neural network with model loaded from the save file.
     """
-    model = tf.keras.models.load_model(saved_model.keras)
+    model = tf.keras.models.load_model(saved_model)
     return model 
 
 
