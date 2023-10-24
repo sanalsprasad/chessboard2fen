@@ -11,12 +11,12 @@ from train_cnn_model import load_model
 
 class PieceClassifier:
     """Object to classify a chees piece using a CNN."""
-    def __init__(self, saved_model: str ="saved_model"):
+    def __init__(self, saved_model: str ="saved_model.keras"):
         """Initialized PieceClassifier object using CNN model weights.
 
         Args:
             saved_model (str, optional): Savel file for the model. Defaults to
-                    "saved_model".
+                    "saved_model.keras".
         """ 
         # Conver to absolute path
         script_dir = os.path.dirname(__file__) #<-- absolute dir the script is in
