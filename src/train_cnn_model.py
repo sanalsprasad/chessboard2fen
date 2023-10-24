@@ -91,8 +91,8 @@ def train_model(x_train: tf.Tensor, y_train: tf.Tensor) -> keras.Model:
     epochs = 5
     model.fit(x_train, y_train, epochs=epochs)
     print("Done training model.")
-    model.save('model_weights')  # Save the weights of the model 
-    print("Model weights saved to file model_weights.")
+    model.save('saved_model.keras')  # Save the model 
+    print("Model saved to file saved_model.")
     return model
 
 
@@ -142,17 +142,17 @@ def validate_model(model: keras.Model, test_board_count: int = 100) -> None:
     model.evaluate(x_test,y_test)
     
 
-def load_model(weight_file: str = "model_weights") -> keras.Model:
+def load_model(saved_model: str = "saved_model.keras") -> keras.Model:
     """Loads the weights of the neural network from the weights file.
 
     Args:
-        weight_file (str, optional): File location for the weight file. Defaults to 
-                "model_weights".
+        saved_model (str, optional): File location for the saved model. Defaults to 
+                "saved_model".
 
     Returns:
-        model (keras.Model): Neural network with weights loaded from weight file.
+        model (keras.Model): Neural network with model loaded from the save file.
     """
-    model = tf.keras.models.load_model(weight_file)
+    model = tf.keras.models.load_model(saved_model)
     return model 
 
 
