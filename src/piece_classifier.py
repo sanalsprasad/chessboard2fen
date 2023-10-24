@@ -11,17 +11,17 @@ from train_cnn_model import load_model
 
 class PieceClassifier:
     """Object to classify a chees piece using a CNN."""
-    def __init__(self, weight_file: str ="model_weights"):
+    def __init__(self, saved_model: str ="saved_model"):
         """Initialized PieceClassifier object using CNN model weights.
 
         Args:
-            weight_file (str, optional): File with model weights. Defaults to
-                    "model_weights".
+            saved_model (str, optional): Savel file for the model. Defaults to
+                    "saved_model".
         """ 
         # Conver to absolute path
         script_dir = os.path.dirname(__file__) #<-- absolute dir the script is in
-        abs_weight_file_path = os.path.join(script_dir, weight_file)
-        self.model = load_model(weight_file=abs_weight_file_path)
+        abs_save_file_path = os.path.join(script_dir, weight_file)
+        self.model = load_model(saved_model=abs_save_file_path)
     
     def predict(self, square: tf.Tensor):
         """Predicts the piece type based piece image tensor.
