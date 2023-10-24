@@ -20,7 +20,7 @@ class PieceClassifier:
         """ 
         # Conver to absolute path
         script_dir = os.path.dirname(__file__) #<-- absolute dir the script is in
-        abs_save_file_path = os.path.join(script_dir, weight_file)
+        abs_save_file_path = os.path.join(script_dir, saved_model)
         self.model = load_model(saved_model=abs_save_file_path)
     
     def predict(self, square: tf.Tensor):
